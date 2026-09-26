@@ -1,6 +1,6 @@
-import React from 'react';
-import { Vote, Users, Check, Shield, Lock, ArrowRight, Sparkles, BarChart3, Fingerprint, Boxes } from 'lucide-react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { Vote, Users, Check, Shield, Lock, ArrowRight, Sparkles, BarChart3, Fingerprint, Boxes, Menu, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Background from '../assets/Background.mp4';
 import { Link } from 'react-router-dom';
 
@@ -10,8 +10,10 @@ const fadeUp = {
 };
 
 const LandingPage = () => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
-    <div className="bg-ink-900 text-white overflow-x-hidden">
+    <div className="bg-ink-900 text-white overflow-x-hidden min-h-screen">
       {/* ───────────── Hero ───────────── */}
       <section className="relative min-h-screen overflow-hidden">
         {/* Video + aurora overlay */}
@@ -20,28 +22,82 @@ const LandingPage = () => {
             <source src={Background} type="video/mp4" />
           </video>
           <div className="absolute inset-0 bg-aurora opacity-95" />
-          <div className="absolute inset-0 bg-gradient-to-b from-ink-900/40 via-transparent to-ink-900" />
+          <div className="absolute inset-0 bg-gradient-to-b from-ink-900/60 via-transparent to-ink-900" />
         </div>
 
-        {/* Floating blobs */}
+        {/* Floating glow blobs */}
         <div className="pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full bg-brand-600/30 blur-3xl animate-blob z-0" />
         <div className="pointer-events-none absolute top-1/3 -right-24 h-96 w-96 rounded-full bg-accent-500/30 blur-3xl animate-blob z-0" style={{ animationDelay: '3s' }} />
 
         {/* Nav */}
-        <nav className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
+        <nav className="relative z-30 mx-auto flex max-w-7xl items-center justify-between px-6 py-6 backdrop-blur-sm">
           <Link to="/" className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-gradient glow">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-gradient glow shadow-lg shadow-brand-500/20">
               <Vote className="h-5 w-5 text-white" />
             </div>
-            <span className="text-xl font-bold font-display">VoteChain</span>
+            <span className="text-xl font-bold font-display tracking-tight">VoteChain</span>
           </Link>
-          <div className="hidden items-center gap-8 text-sm text-white/70 md:flex">
+
+          <div className="hidden items-center gap-8 text-sm font-medium text-white/75 md:flex">
             <a href="#features" className="transition hover:text-white">Features</a>
             <a href="#how" className="transition hover:text-white">How it works</a>
             <Link to="/party/auth" className="transition hover:text-white">For Parties</Link>
           </div>
-          <Link to="/admin/auth" className="btn-ghost text-sm">Admin Login</Link>
+
+          <div className="hidden items-center gap-4 md:flex">
+            <Link to="/admin/auth" className="btn-ghost text-sm">Admin Login</Link>
+          </div>
+
+          {/* Mobile menu toggle */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 rounded-lg text-white/80 hover:text-white md:hidden"
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
         </nav>
+
+        {/* Mobile dropdown */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="relative z-30 mx-6 rounded-2xl glass p-6 md:hidden flex flex-col gap-4 border border-white/10"
+            >
+              <a
+                href="#features"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-white/80 hover:text-white font-medium"
+              >
+                Features
+              </a>
+              <a
+                href="#how"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-white/80 hover:text-white font-medium"
+              >
+                How it works
+              </a>
+              <Link
+                to="/party/auth"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-white/80 hover:text-white font-medium"
+              >
+                For Parties
+              </Link>
+              <Link
+                to="/admin/auth"
+                onClick={() => setMobileMenuOpen(false)}
+                className="btn-ghost text-sm text-center"
+              >
+                Admin Login
+              </Link>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Hero content */}
         <div className="relative z-20 mx-auto max-w-7xl px-6 pt-12 pb-24 md:pt-20">
@@ -52,23 +108,23 @@ const LandingPage = () => {
             transition={{ duration: 0.6 }}
             className="mx-auto max-w-4xl text-center"
           >
-            <span className="mb-6 inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-sm text-white/80">
+            <span className="mb-6 inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-sm text-white/90 border border-white/15 shadow-sm">
               <Sparkles className="h-4 w-4 text-cyber-400" />
               Blockchain-secured · End-to-end verifiable
             </span>
-            <h1 className="text-5xl font-extrabold leading-[1.05] font-display md:text-7xl">
+            <h1 className="text-5xl font-extrabold leading-[1.05] font-display md:text-7xl tracking-tight">
               Democracy,
               <br />
               <span className="gradient-text">reimagined for the digital age</span>
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg text-white/70 md:text-xl">
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-white/75 md:text-xl leading-relaxed">
               Cast your vote in seconds. Every ballot is encrypted, tamper-proof, and
               independently verifiable on-chain — no middlemen, no doubt.
             </p>
 
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link to="/voter/auth">
-                <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} className="btn-primary text-lg">
+                <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} className="btn-primary text-lg shadow-lg shadow-brand-500/25">
                   Register to Vote <ArrowRight className="h-5 w-5" />
                 </motion.button>
               </Link>
@@ -94,16 +150,16 @@ const LandingPage = () => {
               { value: '0', label: 'Tamper attempts possible' },
               { value: '<5s', label: 'To cast a vote' },
             ].map((s) => (
-              <div key={s.label} className="glass rounded-2xl px-4 py-6 text-center">
+              <div key={s.label} className="glass rounded-2xl px-4 py-6 text-center border border-white/10 hover:border-white/20 transition">
                 <div className="text-3xl font-bold gradient-text font-display">{s.value}</div>
-                <div className="mt-1 text-xs text-white/60">{s.label}</div>
+                <div className="mt-1 text-xs text-white/60 font-medium">{s.label}</div>
               </div>
             ))}
           </motion.div>
 
           {/* Role cards */}
           <div className="mx-auto mt-16 grid max-w-5xl gap-6 md:grid-cols-2">
-            <Link to="/party/auth">
+            <Link to="/party/auth" className="block h-full">
               <RegistrationCard
                 title="Party Registration"
                 description="Register your political party, build your team, and manage campaigns with real-time analytics."
@@ -111,7 +167,7 @@ const LandingPage = () => {
                 cta="Register a party"
               />
             </Link>
-            <Link to="/voter/auth">
+            <Link to="/voter/auth" className="block h-full">
               <RegistrationCard
                 title="Voter Registration"
                 description="Quick, secure onboarding with identity verification so every eligible voter can participate."
@@ -147,15 +203,15 @@ const RegistrationCard = ({
 }) => (
   <motion.div
     whileHover={{ y: -6 }}
-    className={`group relative h-full overflow-hidden rounded-3xl p-8 transition ${
-      featured ? 'gradient-border bg-white/[0.07]' : 'glass'
+    className={`group relative h-full overflow-hidden rounded-3xl p-8 transition shadow-lg ${
+      featured ? 'gradient-border bg-white/[0.08] shadow-brand-500/10' : 'glass hover:bg-white/[0.08]'
     }`}
   >
     <div className="mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-gradient text-white glow">
       {icon}
     </div>
-    <h3 className="text-2xl font-semibold font-display">{title}</h3>
-    <p className="mt-2 text-white/65">{description}</p>
+    <h3 className="text-2xl font-semibold font-display tracking-tight">{title}</h3>
+    <p className="mt-2 text-white/70 leading-relaxed">{description}</p>
     <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-cyber-300">
       {cta}
       <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
@@ -174,7 +230,7 @@ const Features = () => {
   ];
 
   return (
-    <section id="features" className="relative py-28">
+    <section id="features" className="relative py-28 border-t border-white/5">
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader
           eyebrow="Why VoteChain"
@@ -190,13 +246,13 @@ const Features = () => {
               whileInView="show"
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.07 }}
-              className="group rounded-3xl glass p-7 transition hover:bg-white/[0.1]"
+              className="group rounded-3xl glass p-7 transition hover:bg-white/[0.1] border border-white/10 hover:border-white/20"
             >
-              <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-gradient text-white transition group-hover:scale-110">
+              <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-gradient text-white transition group-hover:scale-110 shadow-md">
                 {feature.icon}
               </div>
-              <h3 className="text-xl font-semibold font-display">{feature.title}</h3>
-              <p className="mt-2 text-white/60">{feature.description}</p>
+              <h3 className="text-xl font-semibold font-display tracking-tight">{feature.title}</h3>
+              <p className="mt-2 text-white/65 leading-relaxed">{feature.description}</p>
             </motion.div>
           ))}
         </div>
@@ -226,11 +282,11 @@ const HowItWorks = () => {
               whileInView="show"
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="relative rounded-3xl gradient-border bg-white/[0.04] p-7"
+              className="relative rounded-3xl gradient-border bg-white/[0.04] p-7 backdrop-blur-sm"
             >
               <div className="text-4xl font-extrabold gradient-text font-display">{s.n}</div>
               <h3 className="mt-3 text-lg font-semibold">{s.title}</h3>
-              <p className="mt-2 text-sm text-white/60">{s.text}</p>
+              <p className="mt-2 text-sm text-white/65 leading-relaxed">{s.text}</p>
             </motion.div>
           ))}
         </div>
@@ -242,13 +298,13 @@ const HowItWorks = () => {
 const CTA = () => (
   <section className="relative py-24">
     <div className="mx-auto max-w-5xl px-6">
-      <div className="relative overflow-hidden rounded-[2rem] bg-brand-gradient-animated p-12 text-center glow md:p-16">
+      <div className="relative overflow-hidden rounded-[2rem] bg-brand-gradient-animated p-12 text-center glow md:p-16 shadow-2xl">
         <div className="absolute inset-0 bg-black/10" />
         <div className="relative">
-          <h2 className="text-3xl font-extrabold text-white font-display md:text-5xl">Ready to make your vote count?</h2>
-          <p className="mx-auto mt-4 max-w-xl text-white/85">Join a transparent, secure election experience built for everyone.</p>
+          <h2 className="text-3xl font-extrabold text-white font-display md:text-5xl tracking-tight">Ready to make your vote count?</h2>
+          <p className="mx-auto mt-4 max-w-xl text-white/90 text-lg leading-relaxed">Join a transparent, secure election experience built for everyone.</p>
           <Link to="/voter/auth">
-            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }} className="mt-8 inline-flex items-center gap-2 rounded-xl bg-white px-8 py-4 text-lg font-semibold text-brand-700 shadow-xl">
+            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }} className="mt-8 inline-flex items-center gap-2 rounded-xl bg-white px-8 py-4 text-lg font-semibold text-brand-700 shadow-xl hover:bg-white/95 transition">
               Get Started <ArrowRight className="h-5 w-5" />
             </motion.button>
           </Link>
@@ -268,8 +324,8 @@ const SectionHeader = ({ eyebrow, title, subtitle }: { eyebrow: string; title: s
     className="mx-auto max-w-2xl text-center"
   >
     <span className="text-sm font-semibold uppercase tracking-widest text-cyber-400">{eyebrow}</span>
-    <h2 className="mt-3 text-4xl font-bold font-display md:text-5xl">{title}</h2>
-    <p className="mt-4 text-white/60">{subtitle}</p>
+    <h2 className="mt-3 text-4xl font-bold font-display md:text-5xl tracking-tight">{title}</h2>
+    <p className="mt-4 text-white/65 text-lg leading-relaxed">{subtitle}</p>
   </motion.div>
 );
 
@@ -285,12 +341,12 @@ export const Footer = () => {
         <div className="grid gap-10 md:grid-cols-4">
           <div>
             <div className="flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-gradient">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-gradient shadow-md">
                 <Vote className="h-4 w-4 text-white" />
               </div>
               <span className="text-lg font-bold font-display">VoteChain</span>
             </div>
-            <p className="mt-4 text-sm text-white/55">Transforming democracy through secure, accessible, and verifiable digital voting.</p>
+            <p className="mt-4 text-sm text-white/60 leading-relaxed">Transforming democracy through secure, accessible, and verifiable digital voting.</p>
           </div>
           {cols.map((c) => (
             <div key={c.h}>
@@ -298,14 +354,14 @@ export const Footer = () => {
               <ul className="mt-4 space-y-2.5">
                 {c.items.map((i) => (
                   <li key={i}>
-                    <a href="#" className="text-sm text-white/55 transition hover:text-cyber-300">{i}</a>
+                    <a href="#" className="text-sm text-white/60 transition hover:text-cyber-300">{i}</a>
                   </li>
                 ))}
               </ul>
             </div>
           ))}
         </div>
-        <div className="mt-12 border-t border-white/10 pt-8 text-center text-sm text-white/45">
+        <div className="mt-12 border-t border-white/10 pt-8 text-center text-sm text-white/50">
           &copy; {new Date().getFullYear()} VoteChain. All rights reserved.
         </div>
       </div>
